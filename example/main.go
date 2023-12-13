@@ -2,31 +2,37 @@ package main
 
 import (
 	"fmt"
-	"kmrecords"
+	"kmrecords/keyboard"
+	"kmrecords/mouse"
+	"time"
 )
 
 func main() {
-	mh := kmrecords.NewHookData(kmrecords.WH_MOUSE_LL, kmrecords.HookMProcCallback)
-	mhook := kmrecords.SetHooks(mh)
-	fmt.Printf("mhook: %v\n", mhook)
-	defer kmrecords.UnWindowHook(mhook)
-	kh := kmrecords.NewHookData(kmrecords.WH_KEYBOARD_LL, kmrecords.HookKProcCallback)
-	khook := kmrecords.SetHooks(kh)
-	fmt.Printf("khook: %v\n", khook)
-	defer kmrecords.UnWindowHook(khook)
+	mouseChan := make(chan mouse.MouseEvent, 100)
+	mouse.Use(mouseChan)
 	go func() {
 		for {
 			select {
-			case event := <-kmrecords.MouseEventChan:
-				// 处理鼠标事件
-				fmt.Printf("Mouse keyboard event: %v\n", event)
+			case <-time.After(5 * time.Minute):
+				fmt.Println("Received timeout signal")
+			case m := <-mouseChan:
+				fmt.Printf("m: %#v\n", m)
+				continue
 			}
 		}
 	}()
-
-	for {
-		msg := kmrecords.MSG{}
-		kmrecords.GetMessageA(&msg)
-		fmt.Printf("msg: %#v\n", msg)
-	}
+	keyChan := make(chan keyboard.KeyBoardEvent, 100)
+	keyboard.Use(keyChan)
+	go func() {
+		for {
+			select {
+			case <-time.After(5 * time.Minute):
+				fmt.Println("Received timeout signal")
+			case m := <-keyChan:
+				fmt.Printf("k: %#v\n", m)
+				continue
+			}
+		}
+	}()
+	select {}
 }

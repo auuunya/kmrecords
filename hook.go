@@ -19,31 +19,10 @@ var (
 	WH_SYSMSGFILTER    = 6
 )
 
-type MsllHookStruct struct {
-	Pt          Point
-	MouseData   uintptr
-	Flags       uintptr
-	Time        uintptr
-	DwExtraInfo uintptr
-}
-
-type KbDllHookStruct struct {
-	VkCode      uintptr
-	ScanCode    uintptr
-	Flags       uintptr
-	Time        uintptr
-	DwExtraInfo uintptr
-}
 type HookProc func(int, uintptr, uintptr) uintptr
+
 type HookData = _hook
 type _hook struct {
 	Type     int
 	HookProc HookProc
-}
-
-func NewHookData(wh int, proc HookProc) *_hook {
-	return &_hook{
-		Type:     wh,
-		HookProc: proc,
-	}
 }
