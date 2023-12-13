@@ -6,12 +6,27 @@ import (
 )
 
 func main() {
-	mhook := kmrecords.SetHooks(kmrecords.WH_MOUSE_LL, kmrecords.HookMProcCallback)
+	mh := kmrecords.NewHookData(kmrecords.WH_MOUSE_LL, kmrecords.HookMProcCallback)
+	mhook := kmrecords.SetHooks(mh)
 	fmt.Printf("mhook: %v\n", mhook)
-	khook := kmrecords.SetHooks(kmrecords.WH_KEYBOARD_LL, kmrecords.HookKProcCallback)
+	defer kmrecords.UnWindowHook(mhook)
+	kh := kmrecords.NewHookData(kmrecords.WH_KEYBOARD_LL, kmrecords.HookKProcCallback)
+	khook := kmrecords.SetHooks(kh)
 	fmt.Printf("khook: %v\n", khook)
-	var msg *kmrecords.MSG
-	for kmrecords.GetMessageW(msg) != 0 {
-		fmt.Printf("msg: %v\n", msg)
+	defer kmrecords.UnWindowHook(khook)
+	go func() {
+		for {
+			select {
+			case event := <-kmrecords.MouseEventChan:
+				// 处理鼠标事件
+				fmt.Printf("Mouse keyboard event: %v\n", event)
+			}
+		}
+	}()
+
+	for {
+		msg := kmrecords.MSG{}
+		kmrecords.GetMessageA(&msg)
+		fmt.Printf("msg: %#v\n", msg)
 	}
 }

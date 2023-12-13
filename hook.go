@@ -34,14 +34,15 @@ type KbDllHookStruct struct {
 	Time        uintptr
 	DwExtraInfo uintptr
 }
-
-type HookData struct {
+type HookProc func(int, uintptr, uintptr) uintptr
+type HookData = _hook
+type _hook struct {
 	Type     int
-	HookProc func(nCode int, wParam, lParam uintptr) uintptr
+	HookProc HookProc
 }
 
-func NewHookData(wh int, proc func(nCode int, wParam, lParam uintptr) uintptr) *HookData {
-	return &HookData{
+func NewHookData(wh int, proc HookProc) *_hook {
+	return &_hook{
 		Type:     wh,
 		HookProc: proc,
 	}

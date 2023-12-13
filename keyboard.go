@@ -1,19 +1,19 @@
 package kmrecords
 
 var (
-	WM_ACTIVATE    = 0x0006
-	WM_APPCOMMAND  = 0x0319
-	WM_CHAR        = 0x0102
-	WM_DEADCHAR    = 0x0103
-	WM_HOTKEY      = 0x0312
-	WM_KEYDOWN     = 0x0100
-	WM_KEYUP       = 0x0101
-	WM_KILLFOCUS   = 0x0008
-	WM_SETFOCUS    = 0x0007
-	WM_SYSDEADCHAR = 0x0107
-	WM_SYSKEYDOWN  = 0x0104
-	WM_SYSKEYUP    = 0x0105
-	WM_UNICHAR     = 0x0109
+	WM_ACTIVATE            = 0x0006
+	WM_APPCOMMAND          = 0x0319
+	WM_CHAR                = 0x0102
+	WM_DEADCHAR            = 0x0103
+	WM_HOTKEY              = 0x0312
+	WM_KEYDOWN     UINT_16 = 0x0100
+	WM_KEYUP       UINT_16 = 0x0101
+	WM_KILLFOCUS           = 0x0008
+	WM_SETFOCUS            = 0x0007
+	WM_SYSDEADCHAR         = 0x0107
+	WM_SYSKEYDOWN  UINT_16 = 0x0104
+	WM_SYSKEYUP    UINT_16 = 0x0105
+	WM_UNICHAR             = 0x0109
 )
 
 var (
@@ -221,3 +221,14 @@ var (
 	VK_PA1       = 0xFD
 	VK_OEM_CLEAR = 0xFE
 )
+
+type KeyBoradInfo struct {
+	VK_Code   uintptr
+	VK_Type   uint16
+	Ctrl      int
+	Alt       int
+	Shift     int
+	Win       int
+	CapsLock  int
+	TimeStamp int64
+}
